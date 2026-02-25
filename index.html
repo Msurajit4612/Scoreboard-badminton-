@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Badminton Scoreboard</title>
+<title>International Match Scoreboard</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
@@ -11,23 +11,22 @@
 body{
     background:#000;
     color:#fff;
-    height:100vh;
     display:flex;
     flex-direction:column;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
+    height:100vh;
 }
 
 h1{
     color:#ffcc00;
     margin-bottom:10px;
-    letter-spacing:2px;
 }
 
 .scoreboard{
     display:flex;
     width:100%;
-    height:75vh;
+    height:65vh;
 }
 
 .team{
@@ -43,10 +42,6 @@ h1{
 .left{background:#111;}
 .right{background:#1c1c1c;}
 
-.names{
-    text-align:center;
-}
-
 .names input{
     width:90%;
     padding:8px;
@@ -58,8 +53,13 @@ h1{
 }
 
 .score{
-    font-size:140px;
+    font-size:130px;
     font-weight:bold;
+    transition:0.3s;
+}
+
+.game-point{
+    color:red !important;
 }
 
 .controls{
@@ -79,22 +79,26 @@ button{
 .add{background:#00c853;}
 .minus{background:#d50000;}
 
-.serve-indicator{
+.serve{
     position:absolute;
     top:20px;
     right:20px;
-    width:25px;
-    height:25px;
-    border-radius:50%;
-    background:yellow;
-    box-shadow:0 0 15px yellow;
+    font-size:40px;
     display:none;
 }
 
-.info{
+.match-history{
     margin-top:10px;
+    text-align:center;
     font-size:22px;
     color:#ffcc00;
+    min-height:70px;
+}
+
+.game-alert{
+    color:red;
+    font-weight:bold;
+    height:25px;
 }
 
 .top-controls{
@@ -103,13 +107,8 @@ button{
     gap:15px;
 }
 
-.switch{
-    background:#2962ff;
-}
-
-.reset{
-    background:#ff6f00;
-}
+.switch{background:#2962ff;}
+.reset{background:#ff6f00;}
 </style>
 </head>
 
@@ -120,8 +119,8 @@ button{
 <div class="scoreboard">
 
 <div class="team left" id="teamLeft">
-    <div class="serve-indicator" id="serve1"></div>
-    <div class="names">
+    <div class="serve" id="serve1">🏸</div>
+    <div>
         <input type="text" value="PLAYER A1">
         <input type="text" value="PLAYER A2">
     </div>
@@ -133,8 +132,8 @@ button{
 </div>
 
 <div class="team right" id="teamRight">
-    <div class="serve-indicator" id="serve2"></div>
-    <div class="names">
+    <div class="serve" id="serve2">🏸</div>
+    <div>
         <input type="text" value="PLAYER B1">
         <input type="text" value="PLAYER B2">
     </div>
@@ -147,9 +146,10 @@ button{
 
 </div>
 
-<div class="info">
-Game <span id="gameNo">1</span> |
-Sets: <span id="set1">0</span> - <span id="set2">0</span>
+<div class="game-alert" id="gamePointText"></div>
+
+<div class="match-history" id="historyBox">
+<!-- Completed game scores will appear here -->
 </div>
 
 <div class="top-controls">
@@ -160,19 +160,18 @@ Sets: <span id="set1">0</span> - <span id="set2">0</span>
 <script>
 
 let score1=0, score2=0;
-let sets1=0, sets2=0;
-let gameNo=1;
 let server=1;
+let matchHistory=[];
 
 updateServe();
 
 function addPoint(team){
-
     if(team===1) score1++;
     else score2++;
 
     server=team;
     updateServe();
+    checkGamePoint();
     checkGameWin();
     updateDisplay();
 }
@@ -180,48 +179,67 @@ function addPoint(team){
 function minusPoint(team){
     if(team===1 && score1>0) score1--;
     if(team===2 && score2>0) score2--;
+    checkGamePoint();
     updateDisplay();
+}
+
+function checkGamePoint(){
+
+    let alertText="";
+    document.getElementById("score1").classList.remove("game-point");
+    document.getElementById("score2").classList.remove("game-point");
+
+    if(score1===20 && score2<=19){
+        alertText="GAME POINT - LEFT";
+        document.getElementById("score1").classList.add("game-point");
+    }
+
+    if(score2===20 && score1<=19){
+        alertText="GAME POINT - RIGHT";
+        document.getElementById("score2").classList.add("game-point");
+    }
+
+    if(score1===29 && score2===29){
+        alertText="NEXT POINT WINS";
+        document.getElementById("score1").classList.add("game-point");
+        document.getElementById("score2").classList.add("game-point");
+    }
+
+    document.getElementById("gamePointText").innerText=alertText;
 }
 
 function checkGameWin(){
 
 if((score1>=21 || score2>=21) && Math.abs(score1-score2)>=2){
 
-    if(score1>score2) sets1++;
-    else sets2++;
+    saveGame();
+}
 
-    if(sets1===2 || sets2===2){
-        alert("MATCH FINISHED");
-        return;
-    }
+if(score1===30 || score2===30){
+    saveGame();
+}
+
+}
+
+function saveGame(){
+
+    matchHistory.push(score1 + "-" + score2);
+    updateHistory();
 
     autoSwitchSides();
 
     score1=0;
     score2=0;
-    gameNo++;
 }
 
-if(score1===30){
-    sets1++;
-    autoSwitchSides();
-    score1=0;score2=0;gameNo++;
-}
-
-if(score2===30){
-    sets2++;
-    autoSwitchSides();
-    score1=0;score2=0;gameNo++;
-}
-
+function updateHistory(){
+    document.getElementById("historyBox").innerHTML =
+        matchHistory.join("<br>");
 }
 
 function updateDisplay(){
 document.getElementById("score1").innerText=score1;
 document.getElementById("score2").innerText=score2;
-document.getElementById("set1").innerText=sets1;
-document.getElementById("set2").innerText=sets2;
-document.getElementById("gameNo").innerText=gameNo;
 }
 
 function updateServe(){
@@ -232,11 +250,9 @@ document.getElementById("serve2").style.display = server===2 ? "block":"none";
 function autoSwitchSides(){
 let left=document.getElementById("teamLeft");
 let right=document.getElementById("teamRight");
-
 let temp=left.innerHTML;
 left.innerHTML=right.innerHTML;
 right.innerHTML=temp;
-
 server = server===1?2:1;
 updateServe();
 }
@@ -247,11 +263,12 @@ autoSwitchSides();
 
 function resetMatch(){
 score1=0;score2=0;
-sets1=0;sets2=0;
-gameNo=1;
+matchHistory=[];
+updateDisplay();
+updateHistory();
+document.getElementById("gamePointText").innerText="";
 server=1;
 updateServe();
-updateDisplay();
 }
 
 </script>
