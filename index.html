@@ -2,134 +2,116 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<title>International Badminton Scoreboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Professional Tournament Scoreboard</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-
 body{
-    background:linear-gradient(135deg,#0f0f0f,#1c1c1c,#000);
+    margin:0;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    font-family:Arial, sans-serif;
     color:white;
+    overflow:hidden;
+}
+
+/* HEADER */
+.header{
+    text-align:center;
+    padding:10px;
+    font-size:28px;
+    font-weight:bold;
+    background:#000;
+}
+
+/* MAIN AREA */
+.main{
     display:flex;
-    flex-direction:column;
+    justify-content:space-between;
     align-items:center;
-    justify-content:center;
-    height:100vh;
-}
-
-h1{color:#ffcc00;margin-bottom:15px;}
-
-.config{
-    display:flex;
-    gap:20px;
-    background:#111;
-    padding:12px 20px;
-    border-radius:15px;
-    margin-bottom:20px;
-    box-shadow:0 0 15px rgba(255,204,0,0.3);
-}
-
-select{
-    padding:6px 10px;
-    border-radius:8px;
-    border:none;
-}
-
-.board{
-    display:flex;
-    width:95%;
-    max-width:1400px;
-    gap:30px;
+    height:60vh;
+    padding:20px;
 }
 
 .team{
-    flex:1;
-    background:#111;
-    border-radius:25px;
-    padding:25px;
-    box-shadow:0 0 25px rgba(255,204,0,0.2);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:space-between;
-    position:relative;
-}
-
-.names input{
-    width:90%;
-    padding:8px;
-    margin:5px 0;
-    border-radius:8px;
-    border:none;
+    width:40%;
     text-align:center;
+    background:rgba(255,255,255,0.1);
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 0 20px rgba(0,0,0,0.6);
 }
 
 .score{
-    font-size:150px;
-    font-weight:bold;
-}
-
-.red{
-    color:#ff2e2e;
-    text-shadow:0 0 20px red;
-}
-
-.serve{
-    position:absolute;
-    top:20px;
-    right:25px;
-    font-size:45px;
-    display:none;
-}
-
-.controls{
-    display:flex;
-    gap:15px;
+    font-size:120px;
+    margin:20px 0;
 }
 
 button{
-    padding:18px 28px;
-    font-size:22px;
+    padding:15px 25px;
+    font-size:20px;
     border:none;
-    border-radius:12px;
+    border-radius:10px;
+    margin:10px;
     cursor:pointer;
 }
 
-.add{background:#00c853;}
-.minus{background:#d50000;}
+.plus{background:#00c853;color:white;}
+.minus{background:#d50000;color:white;}
 
-.alert{
-    height:30px;
-    font-weight:bold;
-    font-size:22px;
-    margin-top:10px;
+.serve{
+    font-size:40px;
 }
 
-.match-block{
-    margin-top:20px;
-    display:flex;
-    gap:15px;
-    flex-wrap:wrap;
-    justify-content:center;
-}
-
-.set-box{
+/* CONTROLS */
+.controls{
+    text-align:center;
     background:#111;
+    padding:10px;
+}
+
+select{
+    padding:5px;
+    font-size:16px;
+}
+
+/* SET BOX */
+.setBox{
+    background:#000;
+    padding:15px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.setScore{
+    background:#1e1e1e;
     padding:15px 25px;
     border-radius:15px;
-    font-size:28px;
-    box-shadow:0 0 15px rgba(255,204,0,0.4);
+    font-size:30px;
+    font-weight:bold;
+    box-shadow:0 0 10px black;
 }
+
+.red{color:red;}
+.white{color:white;}
+
+.reset{
+    background:orange;
+    font-weight:bold;
+}
+
 </style>
 </head>
 
 <body>
 
-<h1>🏸 PROFESSIONAL TOURNAMENT SCOREBOARD</h1>
+<div class="header">
+🏸 INTERNATIONAL BADMINTON SCOREBOARD
+</div>
 
-<div class="config">
-Game To:
+<div class="controls">
+Game Point:
 <select id="gamePoint">
 <option value="11">11</option>
 <option value="15">15</option>
@@ -138,197 +120,143 @@ Game To:
 
 Sets:
 <select id="setMode">
-<option value="3" selected>Best of 3</option>
+<option value="3">Best of 3</option>
 <option value="5">Best of 5</option>
 </select>
 
 Mode:
-<select id="modeSelect" onchange="updateMode()">
-<option value="doubles" selected>Doubles</option>
-<option value="singles">Singles</option>
+<select id="matchType">
+<option>Singles</option>
+<option>Doubles</option>
 </select>
+
+<button class="reset" onclick="resetAll()">RESET</button>
 </div>
 
-<div class="board">
+<div class="main">
 
-<div class="team" id="leftTeam">
+<div class="team" id="team1">
 <div class="serve" id="serve1">🏸</div>
-<div class="names" id="leftNames">
-<input placeholder="Player A1">
-<input placeholder="Player A2">
-</div>
 <div class="score" id="score1">0</div>
-<div class="controls">
-<button class="add" onclick="addPoint(1)">+</button>
-<button class="minus" onclick="minusPoint(1)">-</button>
-</div>
+<button class="plus" onclick="addPoint(1)">+</button>
+<button class="minus" onclick="removePoint(1)">-</button>
 </div>
 
-<div class="team" id="rightTeam">
-<div class="serve" id="serve2">🏸</div>
-<div class="names" id="rightNames">
-<input placeholder="Player B1">
-<input placeholder="Player B2">
-</div>
+<div class="team" id="team2">
+<div class="serve" id="serve2"></div>
 <div class="score" id="score2">0</div>
-<div class="controls">
-<button class="add" onclick="addPoint(2)">+</button>
-<button class="minus" onclick="minusPoint(2)">-</button>
-</div>
+<button class="plus" onclick="addPoint(2)">+</button>
+<button class="minus" onclick="removePoint(2)">-</button>
 </div>
 
 </div>
 
-<div class="alert" id="alertText"></div>
-
-<div class="match-block" id="matchHistory"></div>
+<div class="setBox" id="setBox">
+</div>
 
 <script>
 
 let score1=0, score2=0;
 let sets1=0, sets2=0;
 let server=1;
-let history=[];
 
-updateServe();
-
-function getGame(){ return parseInt(gamePoint.value); }
-function getCap(){ return getGame()+9; }
-function getRequiredSets(){
-    return Math.ceil(parseInt(setMode.value)/2);
+function updateServe(){
+    document.getElementById("serve1").innerHTML = server==1?"🏸":"";
+    document.getElementById("serve2").innerHTML = server==2?"🏸":"";
 }
 
 function addPoint(team){
-    if(team===1) score1++;
-    else score2++;
+    if(team==1){score1++; server=1;}
+    else{score2++; server=2;}
 
-    server=team;
+    updateScore();
+    checkGame();
+}
+
+function removePoint(team){
+    if(team==1 && score1>0) score1--;
+    if(team==2 && score2>0) score2--;
+    updateScore();
+}
+
+function updateScore(){
+    let gp=parseInt(document.getElementById("gamePoint").value);
+
+    let s1=document.getElementById("score1");
+    let s2=document.getElementById("score2");
+
+    s1.classList.remove("red");
+    s2.classList.remove("red");
+
+    if(score1>=gp-1 && score1>score2){
+        s1.classList.add("red");
+    }
+    if(score2>=gp-1 && score2>score1){
+        s2.classList.add("red");
+    }
+
+    if(score1==gp-1 && score2==gp-1){
+        s1.classList.remove("red");
+        s2.classList.remove("red");
+    }
+
+    s1.innerHTML=score1;
+    s2.innerHTML=score2;
     updateServe();
-    checkGamePoint();
-    checkWin();
-    updateDisplay();
 }
 
-function minusPoint(team){
-    if(team===1 && score1>0) score1--;
-    if(team===2 && score2>0) score2--;
-    checkGamePoint();
-    updateDisplay();
-}
+function checkGame(){
+    let gp=parseInt(document.getElementById("gamePoint").value);
+    let winMargin=2;
 
-function checkGamePoint(){
-
-let alert="";
-let game=getGame();
-let required=getRequiredSets();
-
-score1Elem.classList.remove("red");
-score2Elem.classList.remove("red");
-
-if(score1>=game-1 || score2>=game-1){
-
-    if(score1===score2){
-        alert="DEUCE";
+    if(score1>=gp && score1-score2>=winMargin){
+        sets1++;
+        saveSet(score1,score2);
+        nextSet();
     }
-    else{
-        let leader = score1>score2?1:2;
-        let leaderScore = Math.max(score1,score2);
-
-        if((sets1===required-1 && leader===1) ||
-           (sets2===required-1 && leader===2)){
-            alert="🔥 MATCH POINT";
-        }
-        else{
-            alert="GAME POINT";
-        }
-
-        if(leader===1) score1Elem.classList.add("red");
-        else score2Elem.classList.add("red");
+    if(score2>=gp && score2-score1>=winMargin){
+        sets2++;
+        saveSet(score2,score1);
+        nextSet();
     }
 
-    if(score1===getCap()-1 && score2===getCap()-1){
-        alert="NEXT POINT WINS";
-        score1Elem.classList.add("red");
-        score2Elem.classList.add("red");
-    }
+    checkMatch();
 }
 
-alertText.innerText=alert;
-}
-
-function checkWin(){
-
-let game=getGame();
-let cap=getCap();
-
-if((score1>=game || score2>=game) && Math.abs(score1-score2)>=2){
-    saveSet();
-}
-
-if(score1===cap || score2===cap){
-    saveSet();
-}
-}
-
-function saveSet(){
-
-history.push(score1+"-"+score2);
-
-if(score1>score2) sets1++;
-else sets2++;
-
-renderHistory();
-autoSwitch();
-
-score1=0;score2=0;
-alertText.innerText="";
-
-if(sets1===getRequiredSets() || sets2===getRequiredSets()){
-    alertText.innerText="🏆 MATCH FINISHED";
-}
-}
-
-function renderHistory(){
-matchHistory.innerHTML="";
-history.forEach(s=>{
+function saveSet(w,l){
     let div=document.createElement("div");
-    div.className="set-box";
-    div.innerText=s;
-    matchHistory.appendChild(div);
-});
+    div.className="setScore";
+    div.innerHTML=w+"-"+l;
+    document.getElementById("setBox").appendChild(div);
 }
 
-function updateDisplay(){
-score1Elem.innerText=score1;
-score2Elem.innerText=score2;
+function nextSet(){
+    score1=0;
+    score2=0;
+    server= server==1?2:1; // auto side switch
+    updateScore();
 }
 
-function updateServe(){
-serve1.style.display=server===1?"block":"none";
-serve2.style.display=server===2?"block":"none";
+function checkMatch(){
+    let setMode=parseInt(document.getElementById("setMode").value);
+    let need=Math.ceil(setMode/2);
+
+    if(sets1==need || sets2==need){
+        alert("MATCH FINISHED");
+    }
 }
 
-function autoSwitch(){
-let left=leftTeam.innerHTML;
-leftTeam.innerHTML=rightTeam.innerHTML;
-rightTeam.innerHTML=left;
-server=server===1?2:1;
-updateServe();
+function resetAll(){
+    score1=0;
+    score2=0;
+    sets1=0;
+    sets2=0;
+    server=1;
+    document.getElementById("setBox").innerHTML="";
+    updateScore();
 }
 
-function updateMode(){
-if(modeSelect.value==="singles"){
-leftNames.innerHTML='<input placeholder="Player A">';
-rightNames.innerHTML='<input placeholder="Player B">';
-}
-else{
-leftNames.innerHTML='<input placeholder="Player A1"><input placeholder="Player A2">';
-rightNames.innerHTML='<input placeholder="Player B1"><input placeholder="Player B2">';
-}
-}
-
-let score1Elem=document.getElementById("score1");
-let score2Elem=document.getElementById("score2");
+updateScore();
 
 </script>
 
