@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Badminton Scoreboard</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
+
+body{
+    background:#000;
+    color:#fff;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+h1{
+    color:#ffcc00;
+    margin-bottom:10px;
+    letter-spacing:2px;
+}
+
+.scoreboard{
+    display:flex;
+    width:100%;
+    height:75vh;
+}
+
+.team{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px;
+    position:relative;
+}
+
+.left{background:#111;}
+.right{background:#1c1c1c;}
+
+.names{
+    text-align:center;
+}
+
+.names input{
+    width:90%;
+    padding:8px;
+    margin:5px;
+    font-size:18px;
+    text-align:center;
+    border-radius:8px;
+    border:none;
+}
+
+.score{
+    font-size:140px;
+    font-weight:bold;
+}
+
+.controls{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+button{
+    padding:15px 25px;
+    font-size:22px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.add{background:#00c853;}
+.minus{background:#d50000;}
+
+.serve-indicator{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:25px;
+    height:25px;
+    border-radius:50%;
+    background:yellow;
+    box-shadow:0 0 15px yellow;
+    display:none;
+}
+
+.info{
+    margin-top:10px;
+    font-size:22px;
+    color:#ffcc00;
+}
+
+.top-controls{
+    margin-top:10px;
+    display:flex;
+    gap:15px;
+}
+
+.switch{
+    background:#2962ff;
+}
+
+.reset{
+    background:#ff6f00;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🏸 INTERNATIONAL MATCH SCOREBOARD</h1>
+
+<div class="scoreboard">
+
+<div class="team left" id="teamLeft">
+    <div class="serve-indicator" id="serve1"></div>
+    <div class="names">
+        <input type="text" value="PLAYER A1">
+        <input type="text" value="PLAYER A2">
+    </div>
+    <div class="score" id="score1">0</div>
+    <div class="controls">
+        <button class="add" onclick="addPoint(1)">+</button>
+        <button class="minus" onclick="minusPoint(1)">-</button>
+    </div>
+</div>
+
+<div class="team right" id="teamRight">
+    <div class="serve-indicator" id="serve2"></div>
+    <div class="names">
+        <input type="text" value="PLAYER B1">
+        <input type="text" value="PLAYER B2">
+    </div>
+    <div class="score" id="score2">0</div>
+    <div class="controls">
+        <button class="add" onclick="addPoint(2)">+</button>
+        <button class="minus" onclick="minusPoint(2)">-</button>
+    </div>
+</div>
+
+</div>
+
+<div class="info">
+Game <span id="gameNo">1</span> |
+Sets: <span id="set1">0</span> - <span id="set2">0</span>
+</div>
+
+<div class="top-controls">
+    <button class="switch" onclick="manualSwitch()">Switch Sides</button>
+    <button class="reset" onclick="resetMatch()">Reset Match</button>
+</div>
+
+<script>
+
+let score1=0, score2=0;
+let sets1=0, sets2=0;
+let gameNo=1;
+let server=1;
+
+updateServe();
+
+function addPoint(team){
+
+    if(team===1) score1++;
+    else score2++;
+
+    server=team;
+    updateServe();
+    checkGameWin();
+    updateDisplay();
+}
+
+function minusPoint(team){
+    if(team===1 && score1>0) score1--;
+    if(team===2 && score2>0) score2--;
+    updateDisplay();
+}
+
+function checkGameWin(){
+
+if((score1>=21 || score2>=21) && Math.abs(score1-score2)>=2){
+
+    if(score1>score2) sets1++;
+    else sets2++;
+
+    if(sets1===2 || sets2===2){
+        alert("MATCH FINISHED");
+        return;
+    }
+
+    autoSwitchSides();
+
+    score1=0;
+    score2=0;
+    gameNo++;
+}
+
+if(score1===30){
+    sets1++;
+    autoSwitchSides();
+    score1=0;score2=0;gameNo++;
+}
+
+if(score2===30){
+    sets2++;
+    autoSwitchSides();
+    score1=0;score2=0;gameNo++;
+}
+
+}
+
+function updateDisplay(){
+document.getElementById("score1").innerText=score1;
+document.getElementById("score2").innerText=score2;
+document.getElementById("set1").innerText=sets1;
+document.getElementById("set2").innerText=sets2;
+document.getElementById("gameNo").innerText=gameNo;
+}
+
+function updateServe(){
+document.getElementById("serve1").style.display = server===1 ? "block":"none";
+document.getElementById("serve2").style.display = server===2 ? "block":"none";
+}
+
+function autoSwitchSides(){
+let left=document.getElementById("teamLeft");
+let right=document.getElementById("teamRight");
+
+let temp=left.innerHTML;
+left.innerHTML=right.innerHTML;
+right.innerHTML=temp;
+
+server = server===1?2:1;
+updateServe();
+}
+
+function manualSwitch(){
+autoSwitchSides();
+}
+
+function resetMatch(){
+score1=0;score2=0;
+sets1=0;sets2=0;
+gameNo=1;
+server=1;
+updateServe();
+updateDisplay();
+}
+
+</script>
+
+</body>
+</html>
