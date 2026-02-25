@@ -2,14 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Pro Badminton Scoreboard</title>
+<title>International Badminton Scoreboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background: radial-gradient(circle at top,#16222a,#0f2027);
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     color:white;
     overflow:hidden;
 }
@@ -17,97 +17,24 @@ body{
 /* HEADER */
 .header{
     text-align:center;
-    font-size:30px;
     padding:15px;
+    font-size:28px;
+    font-weight:bold;
     background:linear-gradient(90deg,#00c6ff,#0072ff);
-    font-weight:bold;
 }
 
-/* BOARD */
-.board{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    height:65vh;
-    padding:30px;
-}
-
-/* TEAM PANEL */
-.team{
-    width:40%;
-    background:rgba(255,255,255,0.08);
-    backdrop-filter: blur(15px);
-    border-radius:25px;
-    padding:30px;
-    text-align:center;
-    box-shadow:0 0 25px rgba(0,0,0,0.8);
-}
-
-.teamName{
-    font-size:26px;
-    font-weight:bold;
-    margin-bottom:10px;
-    cursor:pointer;
-    border-bottom:2px dashed #aaa;
-    display:inline-block;
-    padding:5px;
-}
-
-.score{
-    font-size:130px;
-    margin:20px 0;
-    font-weight:bold;
-}
-
-.red{color:#ff3b3b;}
-.white{color:white;}
-
-.btn{
-    padding:18px 30px;
-    font-size:24px;
-    border:none;
-    border-radius:12px;
-    margin:10px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.plus{background:#00c853;}
-.minus{background:#d50000;}
-
-.serve{
-    font-size:45px;
-    height:50px;
-}
-
-/* SET DISPLAY */
-.setContainer{
-    display:flex;
-    justify-content:center;
-    gap:25px;
-    padding:20px;
-    background:#000;
-}
-
-.setScore{
-    background:#1f1f1f;
-    padding:20px 35px;
-    border-radius:20px;
-    font-size:38px;
-    font-weight:bold;
-}
-
-/* CONTROLS */
+/* CONTROL BAR */
 .controls{
-    text-align:center;
-    padding:10px;
     background:#111;
+    padding:10px;
+    text-align:center;
 }
 
 select, button{
-    padding:6px;
-    font-size:16px;
-    border-radius:8px;
+    padding:6px 10px;
+    margin:5px;
+    font-size:15px;
+    border-radius:6px;
     border:none;
 }
 
@@ -116,14 +43,88 @@ select, button{
     font-weight:bold;
 }
 
+/* BOARD */
+.board{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    height:60vh;
+    padding:25px;
+}
+
+/* TEAM PANEL */
+.team{
+    width:40%;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    border-radius:25px;
+    padding:25px;
+    text-align:center;
+    box-shadow:0 0 30px rgba(0,0,0,0.7);
+}
+
+.names{
+    font-size:20px;
+    margin-bottom:10px;
+    cursor:pointer;
+    border-bottom:1px dashed #aaa;
+    padding:5px;
+}
+
+.score{
+    font-size:120px;
+    font-weight:bold;
+    margin:15px 0;
+}
+
+.red{color:#ff3b3b;}
+.white{color:white;}
+
+.matchPoint{
+    color:#ff0000;
+    text-shadow:0 0 20px red;
+}
+
+.btn{
+    padding:15px 25px;
+    font-size:22px;
+    border:none;
+    border-radius:10px;
+    margin:8px;
+    cursor:pointer;
+}
+
+.plus{background:#00c853;}
+.minus{background:#d50000;}
+
+.serve{
+    font-size:40px;
+    height:45px;
+}
+
+/* SET DISPLAY */
+.setContainer{
+    background:#000;
+    padding:20px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+}
+
+.setScore{
+    background:#1f1f1f;
+    padding:15px 30px;
+    border-radius:15px;
+    font-size:32px;
+    font-weight:bold;
+}
+
 /* MODAL */
 .modal{
     display:none;
     position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
+    top:0; left:0;
+    width:100%; height:100%;
     background:rgba(0,0,0,0.8);
     justify-content:center;
     align-items:center;
@@ -131,7 +132,7 @@ select, button{
 
 .modalContent{
     background:#222;
-    padding:30px;
+    padding:25px;
     border-radius:20px;
     text-align:center;
     width:300px;
@@ -139,18 +140,18 @@ select, button{
 
 .modalContent input{
     width:90%;
-    padding:10px;
-    font-size:18px;
-    margin-bottom:15px;
+    padding:8px;
+    margin:5px 0;
+    font-size:16px;
 }
 
 .saveBtn{
     background:#00c853;
-    color:white;
-    padding:10px 20px;
+    padding:8px 20px;
     border:none;
-    border-radius:10px;
-    font-size:18px;
+    border-radius:8px;
+    color:white;
+    font-size:16px;
 }
 </style>
 </head>
@@ -174,9 +175,9 @@ Sets:
 </select>
 
 Mode:
-<select>
-<option>Singles</option>
-<option>Doubles</option>
+<select id="matchType" onchange="updateMode()">
+<option value="Singles">Singles</option>
+<option value="Doubles">Doubles</option>
 </select>
 
 <button class="reset" onclick="resetAll()">RESET</button>
@@ -186,7 +187,7 @@ Mode:
 
 <div class="team">
 <div class="serve" id="serve1">🏸</div>
-<div class="teamName" onclick="openModal(1)" id="name1">PLAYER / TEAM A</div>
+<div class="names" id="name1" onclick="openModal(1)">Player A</div>
 <div class="score white" id="score1">0</div>
 <button class="btn plus" onclick="addPoint(1)">+</button>
 <button class="btn minus" onclick="removePoint(1)">-</button>
@@ -194,7 +195,7 @@ Mode:
 
 <div class="team">
 <div class="serve" id="serve2"></div>
-<div class="teamName" onclick="openModal(2)" id="name2">PLAYER / TEAM B</div>
+<div class="names" id="name2" onclick="openModal(2)">Player B</div>
 <div class="score white" id="score2">0</div>
 <button class="btn plus" onclick="addPoint(2)">+</button>
 <button class="btn minus" onclick="removePoint(2)">-</button>
@@ -207,10 +208,9 @@ Mode:
 <!-- MODAL -->
 <div class="modal" id="modal">
 <div class="modalContent">
-<h3>Enter Name</h3>
-<input type="text" id="playerInput">
-<br>
-<button class="saveBtn" onclick="saveName()">SAVE</button>
+<h3>Edit Name</h3>
+<div id="inputArea"></div>
+<button class="saveBtn" onclick="saveName()">Save</button>
 </div>
 </div>
 
@@ -219,27 +219,51 @@ Mode:
 let score1=0, score2=0;
 let sets1=0, sets2=0;
 let server=1;
-let currentEdit=0;
+let editTeam=0;
+
+function updateMode(){
+    let mode=document.getElementById("matchType").value;
+    if(mode=="Singles"){
+        document.getElementById("name1").innerHTML="Player A";
+        document.getElementById("name2").innerHTML="Player B";
+    }else{
+        document.getElementById("name1").innerHTML="Player A1<br>Player A2";
+        document.getElementById("name2").innerHTML="Player B1<br>Player B2";
+    }
+}
 
 function updateServe(){
-    document.getElementById("serve1").innerHTML = server==1?"🏸":"";
-    document.getElementById("serve2").innerHTML = server==2?"🏸":"";
+    document.getElementById("serve1").innerHTML=server==1?"🏸":"";
+    document.getElementById("serve2").innerHTML=server==2?"🏸":"";
 }
 
 function updateScore(){
     let gp=parseInt(document.getElementById("gamePoint").value);
+    let need=Math.ceil(document.getElementById("setMode").value/2);
+
     let s1=document.getElementById("score1");
     let s2=document.getElementById("score2");
 
-    s1.classList.remove("red");
-    s2.classList.remove("red");
+    s1.className="score white";
+    s2.className="score white";
 
-    if(score1>=gp-1 && score1>score2) s1.classList.add("red");
-    if(score2>=gp-1 && score2>score1) s2.classList.add("red");
-
+    /* Deuce */
     if(score1==gp-1 && score2==gp-1){
-        s1.classList.remove("red");
-        s2.classList.remove("red");
+        s1.className="score white";
+        s2.className="score white";
+    }
+    /* Game Point */
+    else{
+        if(score1>=gp-1 && score1>score2) s1.classList.add("red");
+        if(score2>=gp-1 && score2>score1) s2.classList.add("red");
+    }
+
+    /* Match Point */
+    if(sets1==need-1 && score1>=gp-1 && score1>score2){
+        s1.classList.add("matchPoint");
+    }
+    if(sets2==need-1 && score2>=gp-1 && score2>score1){
+        s2.classList.add("matchPoint");
     }
 
     s1.innerHTML=score1;
@@ -247,16 +271,16 @@ function updateScore(){
     updateServe();
 }
 
-function addPoint(team){
-    if(team==1){score1++; server=1;}
+function addPoint(t){
+    if(t==1){score1++; server=1;}
     else{score2++; server=2;}
     updateScore();
     checkGame();
 }
 
-function removePoint(team){
-    if(team==1 && score1>0) score1--;
-    if(team==2 && score2>0) score2--;
+function removePoint(t){
+    if(t==1 && score1>0) score1--;
+    if(t==2 && score2>0) score2--;
     updateScore();
 }
 
@@ -264,13 +288,11 @@ function checkGame(){
     let gp=parseInt(document.getElementById("gamePoint").value);
     if(score1>=gp && score1-score2>=2){
         saveSet(score1,score2);
-        sets1++;
-        nextSet();
+        sets1++; nextSet();
     }
     if(score2>=gp && score2-score1>=2){
         saveSet(score2,score1);
-        sets2++;
-        nextSet();
+        sets2++; nextSet();
     }
 }
 
@@ -282,8 +304,7 @@ function saveSet(w,l){
 }
 
 function nextSet(){
-    score1=0;
-    score2=0;
+    score1=0; score2=0;
     server=server==1?2:1;
     updateScore();
 }
@@ -296,24 +317,34 @@ function resetAll(){
     updateScore();
 }
 
-/* NAME EDIT */
-function openModal(team){
-    currentEdit=team;
+function openModal(t){
+    editTeam=t;
+    let mode=document.getElementById("matchType").value;
+    let area=document.getElementById("inputArea");
+    area.innerHTML="";
+    if(mode=="Singles"){
+        area.innerHTML='<input id="p1" placeholder="Player Name">';
+    }else{
+        area.innerHTML='<input id="p1" placeholder="Player 1"><input id="p2" placeholder="Player 2">';
+    }
     document.getElementById("modal").style.display="flex";
 }
 
 function saveName(){
-    let value=document.getElementById("playerInput").value;
-    if(value!=""){
-        document.getElementById("name"+currentEdit).innerHTML=value;
+    let mode=document.getElementById("matchType").value;
+    if(mode=="Singles"){
+        let name=document.getElementById("p1").value;
+        if(name!="") document.getElementById("name"+editTeam).innerHTML=name;
+    }else{
+        let n1=document.getElementById("p1").value;
+        let n2=document.getElementById("p2").value;
+        document.getElementById("name"+editTeam).innerHTML=n1+"<br>"+n2;
     }
     document.getElementById("modal").style.display="none";
-    document.getElementById("playerInput").value="";
 }
 
 updateScore();
 
 </script>
-
 </body>
 </html>
